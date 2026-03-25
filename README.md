@@ -11,37 +11,37 @@ Quill is an open-source reminders app that leverages Apple's on-device intellige
 
 ---
 
-## 📱 Screenshots
+## Screenshots
 
 > _Coming soon — app is actively under development._
 
 ---
 
-## ✨ Features
+## Features
 
 ### Core
 
-- ✅ Create, edit, and delete reminders
-- ✅ Due dates, times, and recurring schedules
-- ✅ Smart notifications
-- ✅ Categories and custom lists
-- ✅ Priority levels (low, medium, high, urgent)
-- ✅ Search, filter, and sort
-- ✅ Tags with cross-category linking
-- ✅ Dark mode and light mode
+- Create, edit, and delete reminders
+- Due dates, times, and recurring schedules
+- Smart notifications
+- Categories and custom lists
+- Priority levels (low, medium, high, urgent)
+- Search, filter, and sort
+- Tags with cross-category linking
+- Dark mode and light mode
 
-### 🧠 Intelligence (On-Device AI)
+### Intelligence (On-Device AI)
 
-- 🤖 **Natural language input** — type "Call mom Friday at 5pm" and Quill parses it automatically
-- 🤖 **Auto-categorization** — AI assigns categories based on content
-- 🤖 **Smart priority** — Suggests urgency based on context and your patterns
-- 🤖 **Daily briefing** — AI-generated morning summary of your day
-- 🤖 **Smart suggestions** — Pattern-based reminder recommendations
-- 🤖 **AI summaries** — Overdue and weekly task summaries powered by on-device LLM
+- **Natural language input** | type "Call mom Friday at 5pm" and Quill parses it automatically
+- **Auto-categorization** | AI assigns categories based on content
+- **Smart priority** | Suggests urgency based on context and your patterns
+- **Daily briefing** | AI-generated morning summary of your day
+- **Smart suggestions** | Pattern-based reminder recommendations
+- **AI summaries** | Overdue and weekly task summaries powered by on-device LLM
 
 > Intelligence features use Apple's Foundation Models framework (iOS 26+) and Natural Language framework (iOS 18+). **All processing happens on-device. Your data never leaves your phone.**
 
-### 📦 Widgets
+### Widgets
 
 - Small — Next upcoming reminder
 - Medium — Today's top 3 tasks
@@ -49,13 +49,13 @@ Quill is an open-source reminders app that leverages Apple's on-device intellige
 - Lock Screen — Countdown to next task
 - Live Activity — Currently active/overdue reminder
 
-### 🗣️ Siri & Shortcuts
+### Siri & Shortcuts
 
 - "Hey Siri, add a Quill reminder"
 - "Hey Siri, what's next on Quill?"
 - Full Shortcuts app integration for automation
 
-### ⌚ Apple Watch _(Planned)_
+### Apple Watch _(Planned)_
 
 - Quick add from wrist
 - Glanceable complications
@@ -80,7 +80,7 @@ Quill is an open-source reminders app that leverages Apple's on-device intellige
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -95,7 +95,7 @@ Quill is an open-source reminders app that leverages Apple's on-device intellige
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/quill.git
+   git clone https://github.com/jeshuaedgar/quill.git
    cd quill
    ```
 
@@ -108,7 +108,7 @@ Quill is an open-source reminders app that leverages Apple's on-device intellige
 3. Select your target device or simulator
 4. Build an run (`Cmd + R`)
 
-## 🗺️ Roadmap
+## Roadmap
 
 ### Phase 1 — Foundation _(In Progress)_
 
