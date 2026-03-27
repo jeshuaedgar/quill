@@ -56,6 +56,46 @@ struct SettingsView: View {
                             .padding(.vertical, 4)
                         }
                     }
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("App Icon")
+                            .font(.subheadline)
+                        
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                            ForEach(AppIcon.allCases) { icon in
+                                Button {
+                                    withAnimation {
+                                        themeManager.setAppIcon(icon)
+                                    }
+                                    HapticManager.shared.selection()
+                                } label: {
+                                    VStack(spacing: 6) {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(icon.previewColor.gradient)
+                                            .frame(width: 52, height: 52)
+                                            .overlay {
+                                                Image(systemName: icon.preview)
+                                                    .font(.title3)
+                                                    .foregroundStyle(.white)
+                                            }
+                                            .overlay(alignment: .topTrailing) {
+                                                if themeManager.currentAppIcon == icon {
+                                                    Image(systemName: "checkmark.circle.fill")
+                                                        .font(.caption)
+                                                        .foregroundStyle(.white)
+                                                        .background(.blue, in: Circle())
+                                                }
+                                            }
+                                        
+                                        Text(icon.label)
+                                            .font(.caption2)
+                                            .foregroundStyle(themeManager.currentAppIcon == icon ? .primary : .secondary)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
                 }
                 
                 // MARK: - Defaults

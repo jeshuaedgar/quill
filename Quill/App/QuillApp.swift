@@ -4,6 +4,7 @@ import SwiftData
 @main
 struct QuillApp: App {
     @State private var themeManager = ThemeManager.shared
+    @Environment(\.scenePhase) private var scenePhase
     
     var body: some Scene {
         WindowGroup {
@@ -17,5 +18,12 @@ struct QuillApp: App {
             Tag.self,
             SharedList.self
         ])
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                if let container = try? ModelContainer(for: Reminder.self, Category.self, Tag.self) {
+                    LiveActivityManager.shared.checkAutoStart(modelContext: container.mainContext)
+                }
+            }
+        }
     }
 }

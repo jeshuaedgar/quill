@@ -27,6 +27,9 @@ final class Reminder {
     // Collaboration
     var isShared: Bool
     var sharedWithIDs: [String]
+    
+    // Live Activity
+    var activityID: String?
 
     // Relationships
     var category: Category?

@@ -5,5 +5,6 @@ import SwiftUI
 struct quillWidgetBundle: WidgetBundle {
     var body: some Widget {
         QuillWidget()
+        QuillLiveActivityWidget()
     }
 }

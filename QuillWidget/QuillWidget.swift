@@ -21,7 +21,9 @@ struct QuillTimelineProvider: TimelineProvider {
             reminders: [
                 WidgetReminder(title: "Sample Reminder", dueDate: Date(), priority: .medium, isOverdue: false)
             ],
-            totalCount: 3
+            totalCount: 3,
+            overdueCount: 0,
+            urgentCount: 1
         )
     }
     
@@ -64,10 +66,15 @@ struct QuillTimelineProvider: TimelineProvider {
             return QuillEntry(
                 date: Date(),
                 reminders: Array(widgetReminders),
-                totalCount: reminders.count
+                totalCount: reminders.count,
+                overdueCount: reminders.filter { r in
+                    guard let due = r.dueDate else { return false }
+                    return due < Date()
+                }.count,
+                urgentCount: reminders.filter { $0.priority == .urgent }.count
             )
         } catch {
-            return QuillEntry(date: Date(), reminders: [], totalCount: 0)
+            return QuillEntry(date: Date(), reminders: [], totalCount: 0, overdueCount: 0, urgentCount: 0)
         }
     }
 }
@@ -78,6 +85,8 @@ struct QuillEntry: TimelineEntry {
     let date: Date
     let reminders: [WidgetReminder]
     let totalCount: Int
+    let overdueCount: Int
+    let urgentCount: Int
 }
 
 struct WidgetReminder: Identifiable {
@@ -210,6 +219,201 @@ struct QuillWidgetMediumView: View {
     }
 }
 
+// MARK: - Large Widget View
+
+struct QuillWidgetLargeView: View {
+    let entry: QuillEntry
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            // Header
+            HStack {
+                Image(systemName: "pencil.and.outline")
+                    .foregroundStyle(.purple)
+                Text("Quill")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                Spacer()
+                Text(entry.date, style: .date)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            
+            // Stats row
+            HStack(spacing: 16) {
+                StatMini(label: "Active", count: entry.totalCount, color: .blue)
+                StatMini(label: "Overdue", count: entry.overdueCount, color: .red)
+                StatMini(label: "Urgent", count: entry.urgentCount, color: .orange)
+            }
+            .font(.caption2)
+            
+            Divider()
+            
+            if entry.reminders.isEmpty {
+                Spacer()
+                HStack {
+                    Spacer()
+                    VStack(spacing: 4) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(.green)
+                        Text("All clear!")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                        Text("No active reminders.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
+                Spacer()
+            } else {
+                ForEach(entry.reminders.prefix(8)) { reminder in
+                    HStack(spacing: 10) {
+                        Circle()
+                            .fill(priorityColor(for: reminder.priority))
+                            .frame(width: 8, height: 8)
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(reminder.title)
+                                .font(.caption)
+                                .fontWeight(.medium)
+                                .lineLimit(2)
+                            
+                            if let due = reminder.dueDate {
+                                Text(formatDate(due))
+                                    .font(.caption2)
+                                    .foregroundStyle(reminder.isOverdue ? .red : .secondary)
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        if reminder.isOverdue {
+                            Text("OVERDUE")
+                                .font(.system(size: 8, weight: .bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 4)
+                                .padding(.vertical, 1)
+                                .background(.red, in: Capsule())
+                        }
+                    }
+                    
+                    if reminder.id != entry.reminders.prefix(8).last?.id {
+                        Divider()
+                    }
+                }
+                
+                if entry.totalCount > 8 {
+                    Text("+\(entry.totalCount - 8) more")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                
+                Spacer()
+            }
+        }
+        .containerBackground(.fill.tertiary, for: .widget)
+    }
+    
+    private func priorityColor(for priority: Priority) -> Color {
+        switch priority {
+        case .none: return Color(.systemGray3)
+        case .low: return .blue
+        case .medium: return .yellow
+        case .high: return .orange
+        case .urgent: return .red
+        }
+    }
+}
+
+private struct StatMini: View {
+    let label: String
+    let count: Int
+    let color: Color
+    
+    var body: some View {
+        HStack(spacing: 3) {
+            Text("\(count)")
+                .fontWeight(.bold)
+                .foregroundStyle(color)
+            Text(label)
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
+// MARK: - Lock Screen: Rectangular Widget
+
+struct QuillWidgetRectangularView: View {
+    let entry: QuillEntry
+    
+    var body: some View {
+        if let next = entry.reminders.first {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 4) {
+                    Image(systemName: "pencil.and.outline")
+                        .font(.caption2)
+                        .foregroundStyle(.purple)
+                    Text("Quill")
+                        .font(.caption2)
+                        .fontWeight(.semibold)
+                }
+                
+                Text(next.title)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .lineLimit(2)
+                
+                if let due = next.dueDate {
+                    Label(formatDate(due), systemImage: "clock")
+                        .font(.caption2)
+                        .foregroundStyle(next.isOverdue ? .red : .secondary)
+                }
+            }
+            .widgetURL(URL(string: "quill://reminder/next"))
+        } else {
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 4) {
+                    Image(systemName: "pencil.and.outline")
+                        .font(.caption2)
+                        .foregroundStyle(.purple)
+                    Text("Quill")
+                        .font(.caption2)
+                        .fontWeight(.semibold)
+                }
+                Text("No upcoming reminders")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+// MARK: - Lock Screen: Circular Widget
+
+struct QuillWidgetCircularView: View {
+    let entry: QuillEntry
+    
+    var body: some View {
+        ZStack {
+            AccessoryWidgetBackground()
+            
+            VStack(spacing: 2) {
+                Text("\(entry.totalCount)")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .contentTransition(.numericText())
+                
+                Text("tasks")
+                    .font(.system(size: 8))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .widgetURL(URL(string: "quill://reminders"))
+    }
+}
+
 // MARK: - Date Formatting Helper
 
 private func formatDate(_ date: Date) -> String {
@@ -232,7 +436,7 @@ struct QuillWidget: Widget {
         }
         .configurationDisplayName("Quill Reminders")
         .description("See your upcoming reminders at a glance.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .accessoryRectangular, .accessoryCircular])
     }
 }
 
@@ -246,6 +450,12 @@ struct QuillWidgetEntryView: View {
             QuillWidgetSmallView(entry: entry)
         case .systemMedium:
             QuillWidgetMediumView(entry: entry)
+        case .systemLarge:
+            QuillWidgetLargeView(entry: entry)
+        case .accessoryRectangular:
+            QuillWidgetRectangularView(entry: entry)
+        case .accessoryCircular:
+            QuillWidgetCircularView(entry: entry)
         default:
             QuillWidgetSmallView(entry: entry)
         }
@@ -262,7 +472,9 @@ struct QuillWidgetEntryView: View {
         reminders: [
             WidgetReminder(title: "Call dentist", dueDate: Date(), priority: .high, isOverdue: false)
         ],
-        totalCount: 5
+        totalCount: 5,
+        overdueCount: 1,
+        urgentCount: 0
     )
 }
 
@@ -276,6 +488,52 @@ struct QuillWidgetEntryView: View {
             WidgetReminder(title: "Buy groceries", dueDate: Date().addingTimeInterval(3600), priority: .medium, isOverdue: false),
             WidgetReminder(title: "Submit report", dueDate: nil, priority: .urgent, isOverdue: true)
         ],
-        totalCount: 7
+        totalCount: 7,
+        overdueCount: 2,
+        urgentCount: 1
+    )
+}
+
+#Preview(as: .systemLarge) {
+    QuillWidget()
+} timeline: {
+    QuillEntry(
+        date: Date(),
+        reminders: [
+            WidgetReminder(title: "Call dentist", dueDate: Date(), priority: .high, isOverdue: false),
+            WidgetReminder(title: "Buy groceries", dueDate: Date().addingTimeInterval(3600), priority: .medium, isOverdue: false),
+            WidgetReminder(title: "Submit report", dueDate: Date().addingTimeInterval(-3600), priority: .urgent, isOverdue: true),
+            WidgetReminder(title: "Review PR", dueDate: Date().addingTimeInterval(7200), priority: .low, isOverdue: false),
+            WidgetReminder(title: "Gym session", dueDate: Date().addingTimeInterval(18000), priority: .none, isOverdue: false)
+        ],
+        totalCount: 12,
+        overdueCount: 3,
+        urgentCount: 2
+    )
+}
+
+#Preview(as: .accessoryRectangular) {
+    QuillWidget()
+} timeline: {
+    QuillEntry(
+        date: Date(),
+        reminders: [
+            WidgetReminder(title: "Call dentist tomorrow at 3pm", dueDate: Date().addingTimeInterval(86400), priority: .high, isOverdue: false)
+        ],
+        totalCount: 5,
+        overdueCount: 0,
+        urgentCount: 1
+    )
+}
+
+#Preview(as: .accessoryCircular) {
+    QuillWidget()
+} timeline: {
+    QuillEntry(
+        date: Date(),
+        reminders: [],
+        totalCount: 7,
+        overdueCount: 2,
+        urgentCount: 1
     )
 }

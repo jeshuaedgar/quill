@@ -9,6 +9,7 @@ struct ReminderDetailView: View {
 
     @State private var isEditing = false
     @State private var showLocationPicker = false
+    @State private var isFocused = false
 
     private var viewModel: RemindersViewModel {
         RemindersViewModel(modelContext: modelContext)
@@ -137,9 +138,32 @@ struct ReminderDetailView: View {
 
             // MARK: - Actions
             Section {
+                if !reminder.isCompleted {
+                    Button {
+                        if isFocused {
+                            LiveActivityManager.shared.endActivity(for: reminder)
+                            isFocused = false
+                        } else {
+                            LiveActivityManager.shared.startActivity(for: reminder)
+                            isFocused = true
+                        }
+                        HapticManager.shared.selection()
+                    } label: {
+                        Label(
+                            isFocused ? "Stop Focus" : "Start Focus",
+                            systemImage: isFocused ? "target" : "target"
+                        )
+                        .foregroundStyle(isFocused ? .orange : .blue)
+                    }
+                }
+
                 Button {
                     withAnimation {
                         viewModel.toggleComplete(reminder)
+                        if reminder.isCompleted {
+                            LiveActivityManager.shared.endActivity(for: reminder)
+                            isFocused = false
+                        }
                     }
                     HapticManager.shared.success()
                 } label: {
@@ -150,6 +174,7 @@ struct ReminderDetailView: View {
                 }
 
                 Button(role: .destructive) {
+                    LiveActivityManager.shared.endActivity(for: reminder)
                     viewModel.deleteReminder(reminder)
                     HapticManager.shared.warning()
                     dismiss()
@@ -160,6 +185,9 @@ struct ReminderDetailView: View {
         }
         .navigationTitle("Details")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            isFocused = reminder.activityID != nil
+        }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(isEditing ? "Done" : "Edit") {

@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 @Observable
 class ThemeManager {
@@ -64,6 +65,60 @@ class ThemeManager {
         case .system: return nil
         case .light: return .light
         case .dark: return .dark
+        }
+    }
+    
+    // MARK: - App Icon
+    
+    var currentAppIcon: AppIcon {
+        AppIcon(rawValue: appIconName) ?? .primary
+    }
+    
+    func setAppIcon(_ icon: AppIcon) {
+        let iconName: String? = icon == .primary ? nil : icon.rawValue
+        UIApplication.shared.setAlternateIconName(iconName) { error in
+            if let error = error {
+                print("Error setting app icon: \(error.localizedDescription)")
+            }
+        }
+        appIconName = icon.rawValue
+    }
+}
+
+// MARK: - App Icon Enum
+
+enum AppIcon: String, CaseIterable, Identifiable {
+    case primary = "AppIcon"
+    case monochrome = "AppIcon-Monochrome"
+    case gradient = "AppIcon-Gradient"
+    case outline = "AppIcon-Outline"
+    
+    var id: String { rawValue }
+    
+    var label: String {
+        switch self {
+        case .primary: return "Default"
+        case .monochrome: return "Mono"
+        case .gradient: return "Gradient"
+        case .outline: return "Outline"
+        }
+    }
+    
+    var preview: String {
+        switch self {
+        case .primary: return "pencil.and.outline"
+        case .monochrome: return "moon.fill"
+        case .gradient: return "sun.max.fill"
+        case .outline: return "square.and.pencil"
+        }
+    }
+    
+    var previewColor: Color {
+        switch self {
+        case .primary: return .purple
+        case .monochrome: return .primary
+        case .gradient: return .pink
+        case .outline: return .indigo
         }
     }
 }
