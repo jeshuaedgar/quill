@@ -6,19 +6,93 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EE8CCE332F76B92500DE8690 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8CCE322F76B92500DE8690 /* WidgetKit.framework */; };
+		EE8CCE352F76B92500DE8690 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE8CCE342F76B92500DE8690 /* SwiftUI.framework */; };
+		EE8CCE462F76B92700DE8690 /* quillWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EE8CCE302F76B92500DE8690 /* quillWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EE8CCE442F76B92700DE8690 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EEBF77D32F73E326002D424C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EE8CCE2F2F76B92500DE8690;
+			remoteInfo = quillWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EE8CCE4B2F76B92700DE8690 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				EE8CCE462F76B92700DE8690 /* quillWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		EE8CCE302F76B92500DE8690 /* quillWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = quillWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE8CCE322F76B92500DE8690 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		EE8CCE342F76B92500DE8690 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		EEBF77DB2F73E326002D424C /* quill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = quill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		EE8CCE472F76B92700DE8690 /* Exceptions for "QuillWidget" folder in "quillWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = EE8CCE2F2F76B92500DE8690 /* quillWidgetExtension */;
+		};
+		EE8CCE4D2F76B99300DE8690 /* Exceptions for "Quill" folder in "quillWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Extensions/Date+Extensions.swift",
+				Models/Category.swift,
+				Models/Reminder.swift,
+				Models/SharedList.swift,
+				Models/Tag.swift,
+			);
+			target = EE8CCE2F2F76B92500DE8690 /* quillWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		EEBF77DD2F73E326002D424C /* quill */ = {
+		EE8CCE362F76B92500DE8690 /* QuillWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = quill;
+			exceptions = (
+				EE8CCE472F76B92700DE8690 /* Exceptions for "QuillWidget" folder in "quillWidgetExtension" target */,
+			);
+			path = QuillWidget;
+			sourceTree = "<group>";
+		};
+		EEBF77DD2F73E326002D424C /* Quill */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EE8CCE4D2F76B99300DE8690 /* Exceptions for "Quill" folder in "quillWidgetExtension" target */,
+			);
+			path = Quill;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		EE8CCE2D2F76B92500DE8690 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE8CCE352F76B92500DE8690 /* SwiftUI.framework in Frameworks */,
+				EE8CCE332F76B92500DE8690 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EEBF77D82F73E326002D424C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -29,10 +103,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EE8CCE312F76B92500DE8690 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EE8CCE322F76B92500DE8690 /* WidgetKit.framework */,
+				EE8CCE342F76B92500DE8690 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		EEBF77D22F73E326002D424C = {
 			isa = PBXGroup;
 			children = (
-				EEBF77DD2F73E326002D424C /* quill */,
+				EEBF77DD2F73E326002D424C /* Quill */,
+				EE8CCE362F76B92500DE8690 /* QuillWidget */,
+				EE8CCE312F76B92500DE8690 /* Frameworks */,
 				EEBF77DC2F73E326002D424C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				EEBF77DB2F73E326002D424C /* quill.app */,
+				EE8CCE302F76B92500DE8690 /* quillWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +134,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		EE8CCE2F2F76B92500DE8690 /* quillWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EE8CCE482F76B92700DE8690 /* Build configuration list for PBXNativeTarget "quillWidgetExtension" */;
+			buildPhases = (
+				EE8CCE2C2F76B92500DE8690 /* Sources */,
+				EE8CCE2D2F76B92500DE8690 /* Frameworks */,
+				EE8CCE2E2F76B92500DE8690 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				EE8CCE362F76B92500DE8690 /* QuillWidget */,
+			);
+			name = quillWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = quillWidgetExtension;
+			productReference = EE8CCE302F76B92500DE8690 /* quillWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		EEBF77DA2F73E326002D424C /* quill */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EEBF77E82F73E329002D424C /* Build configuration list for PBXNativeTarget "quill" */;
@@ -55,13 +163,15 @@
 				EEBF77D72F73E326002D424C /* Sources */,
 				EEBF77D82F73E326002D424C /* Frameworks */,
 				EEBF77D92F73E326002D424C /* Resources */,
+				EE8CCE4B2F76B92700DE8690 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				EE8CCE452F76B92700DE8690 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				EEBF77DD2F73E326002D424C /* quill */,
+				EEBF77DD2F73E326002D424C /* Quill */,
 			);
 			name = quill;
 			packageProductDependencies = (
@@ -80,6 +190,9 @@
 				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2640;
 				TargetAttributes = {
+					EE8CCE2F2F76B92500DE8690 = {
+						CreatedOnToolsVersion = 26.4;
+					};
 					EEBF77DA2F73E326002D424C = {
 						CreatedOnToolsVersion = 26.4;
 					};
@@ -100,11 +213,19 @@
 			projectRoot = "";
 			targets = (
 				EEBF77DA2F73E326002D424C /* quill */,
+				EE8CCE2F2F76B92500DE8690 /* quillWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		EE8CCE2E2F76B92500DE8690 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EEBF77D92F73E326002D424C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +236,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		EE8CCE2C2F76B92500DE8690 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EEBF77D72F73E326002D424C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +252,78 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		EE8CCE452F76B92700DE8690 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EE8CCE2F2F76B92500DE8690 /* quillWidgetExtension */;
+			targetProxy = EE8CCE442F76B92700DE8690 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		EE8CCE492F76B92700DE8690 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = quillWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = quillWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = medusalabs.com.quill.quillWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EE8CCE4A2F76B92700DE8690 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = quillWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = quillWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = medusalabs.com.quill.quillWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		EEBF77E62F73E329002D424C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -326,6 +525,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		EE8CCE482F76B92700DE8690 /* Build configuration list for PBXNativeTarget "quillWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE8CCE492F76B92700DE8690 /* Debug */,
+				EE8CCE4A2F76B92700DE8690 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		EEBF77D62F73E326002D424C /* Build configuration list for PBXProject "quill" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
