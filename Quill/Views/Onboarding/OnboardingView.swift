@@ -8,7 +8,7 @@ struct OnboardingView: View {
         TabView(selection: $currentPage) {
             // Page 1 — Welcome
             OnboardingPage(
-                icon: "pencil.and.outline",
+                icon: "pen",
                 iconColor: .purple,
                 title: "Welcome to Quill",
                 subtitle: "A supercharged reminders app that helps you remember everything, effortlessly.",

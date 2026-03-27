@@ -41,9 +41,8 @@ struct QuillLiveActivityBannerView: View {
             .fill(priorityColor)
             .frame(width: 36, height: 36)
             .overlay {
-                Image(systemName: "pencil.and.outline")
+                Text("🪶")
                     .font(.caption2)
-                    .foregroundStyle(.white)
             }
     }
     
@@ -116,9 +115,8 @@ struct QuillLiveActivityExpandedView: View {
             .fill(priorityColor)
             .frame(width: 32, height: 32)
             .overlay {
-                Image(systemName: "pencil.and.outline")
+                Text("🪶")
                     .font(.caption2)
-                    .foregroundStyle(.white)
             }
     }
     
@@ -144,7 +142,7 @@ struct QuillLiveActivityCompactView: View {
                 .fill(priorityColor)
                 .frame(width: 20, height: 20)
                 .overlay {
-                    Image(systemName: "pencil.and.outline")
+                    Text("🪶")
                         .font(.system(size: 8))
                         .foregroundStyle(.white)
                 }
@@ -177,7 +175,7 @@ struct QuillLiveActivityMinimalView: View {
             .fill(priorityColor)
             .frame(width: 20, height: 20)
             .overlay {
-                Image(systemName: "pencil.and.outline")
+                Text("🪶")
                     .font(.system(size: 8))
                     .foregroundStyle(.white)
             }
@@ -213,7 +211,7 @@ struct QuillLiveActivityWidget: Widget {
                     .fill(priorityColor(for: context.state.priority))
                     .frame(width: 16, height: 16)
                     .overlay {
-                        Image(systemName: "pencil.and.outline")
+                        Text("🪶")
                             .font(.system(size: 7))
                             .foregroundStyle(.white)
                     }
@@ -226,7 +224,7 @@ struct QuillLiveActivityWidget: Widget {
                     .fill(priorityColor(for: context.state.priority))
                     .frame(width: 16, height: 16)
                     .overlay {
-                        Image(systemName: "pencil.and.outline")
+                        Text("🪶")
                             .font(.system(size: 7))
                             .foregroundStyle(.white)
                     }

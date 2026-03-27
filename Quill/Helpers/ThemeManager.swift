@@ -106,10 +106,10 @@ enum AppIcon: String, CaseIterable, Identifiable {
     
     var preview: String {
         switch self {
-        case .primary: return "pencil.and.outline"
+        case .primary: return "pen"
         case .monochrome: return "moon.fill"
         case .gradient: return "sun.max.fill"
-        case .outline: return "square.and.pencil"
+        case .outline: return "pen.tip"
         }
     }
     

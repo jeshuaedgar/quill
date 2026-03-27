@@ -182,7 +182,7 @@ struct HomeView: View {
                         Button {
                             showAddReminder = true
                         } label: {
-                            Label("Manual Add", systemImage: "square.and.pencil")
+                            Label("Manual Add", systemImage: "pen")
                         }
                     } label: {
                         Image(systemName: "plus.circle.fill")

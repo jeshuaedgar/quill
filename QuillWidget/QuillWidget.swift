@@ -105,15 +105,16 @@ struct QuillWidgetSmallView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Image(systemName: "pencil.and.outline")
-                    .foregroundStyle(.purple)
+                Text("🪶")
                 Text("Quill")
                     .font(.caption)
                     .fontWeight(.bold)
                 Spacer()
-                Text("\(entry.totalCount)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if entry.totalCount > 0 {
+                    Text("\(entry.totalCount)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             
             if let first = entry.reminders.first {
@@ -156,15 +157,16 @@ struct QuillWidgetMediumView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Image(systemName: "pencil.and.outline")
-                    .foregroundStyle(.purple)
+                Text("🪶")
                 Text("Quill")
                     .font(.caption)
                     .fontWeight(.bold)
                 Spacer()
-                Text("\(entry.totalCount) active")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if entry.totalCount > 0 {
+                    Text("\(entry.totalCount) active")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             
             if entry.reminders.isEmpty {
@@ -228,8 +230,7 @@ struct QuillWidgetLargeView: View {
         VStack(alignment: .leading, spacing: 10) {
             // Header
             HStack {
-                Image(systemName: "pencil.and.outline")
-                    .foregroundStyle(.purple)
+                Text("🪶")
                 Text("Quill")
                     .font(.caption)
                     .fontWeight(.bold)
@@ -352,9 +353,8 @@ struct QuillWidgetRectangularView: View {
         if let next = entry.reminders.first {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 4) {
-                    Image(systemName: "pencil.and.outline")
+                    Text("🪶")
                         .font(.caption2)
-                        .foregroundStyle(.purple)
                     Text("Quill")
                         .font(.caption2)
                         .fontWeight(.semibold)
@@ -375,9 +375,8 @@ struct QuillWidgetRectangularView: View {
         } else {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 4) {
-                    Image(systemName: "pencil.and.outline")
+                    Text("🪶")
                         .font(.caption2)
-                        .foregroundStyle(.purple)
                     Text("Quill")
                         .font(.caption2)
                         .fontWeight(.semibold)
@@ -398,16 +397,22 @@ struct QuillWidgetCircularView: View {
     var body: some View {
         ZStack {
             AccessoryWidgetBackground()
-            
-            VStack(spacing: 2) {
-                Text("\(entry.totalCount)")
+
+            if entry.totalCount == 0 {
+                Image(systemName: "checkmark")
                     .font(.title3)
                     .fontWeight(.bold)
-                    .contentTransition(.numericText())
-                
-                Text("tasks")
-                    .font(.system(size: 8))
-                    .foregroundStyle(.secondary)
+            } else {
+                VStack(spacing: 2) {
+                    Text("\(entry.totalCount)")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .contentTransition(.numericText())
+
+                    Text("tasks")
+                        .font(.system(size: 8))
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .widgetURL(URL(string: "quill://reminders"))
