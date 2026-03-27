@@ -16,6 +16,17 @@ struct AddReminderView: View {
     @State private var selectedCategory: Category?
     @State private var selectedTags: Set<Tag> = []
     @State private var newTagName = ""
+    
+    // Location
+    @State private var showLocationPicker = false
+    @State private var locationLatitude: Double?
+    @State private var locationLongitude: Double?
+    @State private var locationName: String?
+    @State private var locationRadius: Double?
+    @State private var triggerOnArrival = true
+    
+    // Focus
+    @State private var focusFilter: String?
 
     private var viewModel: RemindersViewModel {
         RemindersViewModel(modelContext: modelContext)
@@ -74,6 +85,53 @@ struct AddReminderView: View {
                         }
                         .pickerStyle(.menu)
                     }
+                }
+                
+                // MARK: - Location
+                Section("Location") {
+                    if let name = locationName {
+                        HStack {
+                            Image(systemName: "mappin.circle.fill")
+                                .foregroundStyle(.red)
+                            
+                            VStack(alignment: .leading) {
+                                Text(name)
+                                    .font(.subheadline)
+                                Text(triggerOnArrival ? "On arrival" : "On departure")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Button {
+                                showLocationPicker = true
+                            } label: {
+                                Text("Change")
+                                    .font(.caption)
+                            }
+                        }
+                    } else {
+                        Button {
+                            showLocationPicker = true
+                        } label: {
+                            Label("Add Location", systemImage: "mappin.and.ellipse")
+                        }
+                    }
+                }
+                
+                // MARK: - Focus Filter
+                Section("Focus Mode") {
+                    Picker("Show during", selection: Binding(
+                        get: { focusFilter ?? "All" },
+                        set: { focusFilter = $0 == "All" ? nil : $0 }
+                    )) {
+                        ForEach(FocusModeManager.focusModes, id: \.name) { mode in
+                            Label(mode.name, systemImage: mode.icon)
+                                .tag(mode.name)
+                        }
+                    }
+                    .pickerStyle(.menu)
                 }
 
                 // MARK: - Tags
@@ -134,20 +192,55 @@ struct AddReminderView: View {
                     .disabled(!isValid)
                 }
             }
+            .sheet(isPresented: $showLocationPicker) {
+                LocationPickerView(
+                    selectedLatitude: $locationLatitude,
+                    selectedLongitude: $locationLongitude,
+                    selectedName: $locationName,
+                    radius: $locationRadius,
+                    triggerOnArrival: $triggerOnArrival
+                )
+            }
         }
     }
 
     // MARK: - Actions
 
     private func addReminder() {
-        viewModel.addReminder(
+        let reminder = Reminder(
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             notes: notes.trimmingCharacters(in: .whitespacesAndNewlines),
             dueDate: hasDueDate ? dueDate : nil,
             priority: priority,
             category: selectedCategory,
-            tags: Array(selectedTags)
+            tags: Array(selectedTags),
+            locationLatitude: locationLatitude,
+            locationLongitude: locationLongitude,
+            locationName: locationName,
+            locationRadius: locationRadius,
+            triggerOnArrival: triggerOnArrival,
+            focusFilter: focusFilter
         )
+        
+        modelContext.insert(reminder)
+        
+        do {
+            try modelContext.save()
+        } catch {
+            print("Error saving: \(error)")
+        }
+        
+        // Schedule notifications
+        if hasDueDate {
+            NotificationManager.shared.scheduleNotification(for: reminder)
+        }
+        
+        // Start location monitoring
+        if locationLatitude != nil {
+            LocationManager.shared.startMonitoring(for: reminder)
+        }
+        
+        HapticManager.shared.success()
     }
 
     private func toggleTag(_ tag: Tag) {
@@ -156,14 +249,17 @@ struct AddReminderView: View {
         } else {
             selectedTags.insert(tag)
         }
+        HapticManager.shared.selection()
     }
 
     private func addNewTag() {
         let name = newTagName.trimmingCharacters(in: .whitespaces)
         guard !name.isEmpty else { return }
-        let tag = viewModel.addTag(name: name)
+        let tag = Tag(name: name)
+        modelContext.insert(tag)
         selectedTags.insert(tag)
         newTagName = ""
+        HapticManager.shared.lightImpact()
     }
 }
 

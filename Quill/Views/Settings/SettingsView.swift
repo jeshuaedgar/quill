@@ -1,16 +1,19 @@
 import SwiftUI
+import CoreLocation
 
 struct SettingsView: View {
     @State private var themeManager = ThemeManager.shared
+    @State private var locationManager = LocationManager.shared
     @AppStorage("defaultPriority") private var defaultPriority = 0
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = true
+    
+    @State private var showExport = false
     
     var body: some View {
         NavigationStack {
             Form {
                 // MARK: - Appearance
                 Section("Appearance") {
-                    // Theme Mode
                     Picker("Mode", selection: $themeManager.appearanceMode) {
                         ForEach(AppearanceMode.allCases) { mode in
                             Label(mode.label, systemImage: mode.icon)
@@ -18,7 +21,6 @@ struct SettingsView: View {
                         }
                     }
                     
-                    // Accent Color
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Accent Color")
                             .font(.subheadline)
@@ -66,6 +68,25 @@ struct SettingsView: View {
                     }
                 }
                 
+                // MARK: - Location
+                Section("Location") {
+                    HStack {
+                        Label("Location Access", systemImage: "location.fill")
+                        Spacer()
+                        Text(locationStatusText)
+                            .font(.caption)
+                            .foregroundStyle(locationStatusColor)
+                    }
+                    
+                    if !locationManager.isAuthorized {
+                        Button {
+                            locationManager.requestPermission()
+                        } label: {
+                            Label("Grant Location Access", systemImage: "location.circle")
+                        }
+                    }
+                }
+                
                 // MARK: - Intelligence
                 Section("Intelligence") {
                     HStack {
@@ -88,6 +109,15 @@ struct SettingsView: View {
                         Text("Always")
                             .font(.caption)
                             .foregroundStyle(.green)
+                    }
+                }
+                
+                // MARK: - Data
+                Section("Data") {
+                    Button {
+                        showExport = true
+                    } label: {
+                        Label("Export Reminders", systemImage: "square.and.arrow.up")
                     }
                 }
                 
@@ -136,6 +166,30 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .sheet(isPresented: $showExport) {
+                ExportView()
+            }
+        }
+    }
+    
+    // MARK: - Location Status
+    
+    private var locationStatusText: String {
+        switch locationManager.authorizationStatus {
+        case .authorizedWhenInUse: return "When In Use"
+        case .authorizedAlways: return "Always"
+        case .denied: return "Denied"
+        case .restricted: return "Restricted"
+        case .notDetermined: return "Not Set"
+        @unknown default: return "Unknown"
+        }
+    }
+    
+    private var locationStatusColor: Color {
+        switch locationManager.authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways: return .green
+        case .denied, .restricted: return .red
+        default: return .orange
         }
     }
 }

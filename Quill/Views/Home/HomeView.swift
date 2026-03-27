@@ -18,19 +18,23 @@ struct HomeView: View {
     @State private var showAddReminder = false
     @State private var showSmartAdd = false
     @State private var searchText = ""
+    @State private var focusManager = FocusModeManager.shared
 
     private var viewModel: RemindersViewModel {
         RemindersViewModel(modelContext: modelContext)
     }
 
     private var filteredReminders: [Reminder] {
-        if searchText.isEmpty {
-            return activeReminders
+        var reminders = focusManager.filterReminders(activeReminders)
+        
+        if !searchText.isEmpty {
+            reminders = reminders.filter {
+                $0.title.localizedCaseInsensitiveContains(searchText) ||
+                $0.notes.localizedCaseInsensitiveContains(searchText)
+            }
         }
-        return activeReminders.filter {
-            $0.title.localizedCaseInsensitiveContains(searchText) ||
-            $0.notes.localizedCaseInsensitiveContains(searchText)
-        }
+        
+        return reminders
     }
     
     private var todayReminders: [Reminder] {
@@ -44,9 +48,45 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
+                    // MARK: - Focus Mode Picker
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(FocusModeManager.focusModes, id: \.name) { mode in
+                                Button {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                        focusManager.activeFocus = mode.name
+                                    }
+                                    HapticManager.shared.selection()
+                                } label: {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: mode.icon)
+                                            .font(.caption)
+                                        Text(mode.name)
+                                            .font(.caption)
+                                            .fontWeight(.medium)
+                                    }
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .background(
+                                        focusManager.activeFocus == mode.name
+                                        ? Color.accentColor
+                                        : Color(.systemGray6)
+                                    )
+                                    .foregroundStyle(
+                                        focusManager.activeFocus == mode.name
+                                        ? .white
+                                        : .primary
+                                    )
+                                    .clipShape(Capsule())
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    
                     // MARK: - Daily Briefing
                     DailyBriefingView(reminders: todayReminders)
-                        .padding(.top, 8)
+                        .padding(.top, 4)
                     
                     // MARK: - Smart Add Button
                     Button {

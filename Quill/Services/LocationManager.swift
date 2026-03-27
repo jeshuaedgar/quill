@@ -1,5 +1,6 @@
 import Foundation
 import CoreLocation
+import MapKit
 import SwiftUI
 
 @Observable
@@ -17,6 +18,8 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     // Search results
     var searchResults: [LocationResult] = []
     var isSearching = false
+    
+    private var currentSearch: MKLocalSearch?
     
     override init() {
         super.init()
@@ -74,37 +77,66 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     // MARK: - Search
     
     func searchLocations(query: String) {
+        currentSearch?.cancel()
+        
         guard !query.isEmpty else {
             searchResults = []
+            isSearching = false
             return
         }
         
         isSearching = true
         
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(query) { [weak self] placemarks, error in
-            DispatchQueue.main.async {
-                self?.isSearching = false
+        Task { @MainActor in
+            do {
+                let request = MKLocalSearch.Request()
+                request.naturalLanguageQuery = query
                 
-                if let placemarks = placemarks {
-                    self?.searchResults = placemarks.compactMap { placemark in
-                        guard let location = placemark.location else { return nil }
-                        
-                        let name = [
-                            placemark.name,
-                            placemark.locality,
-                            placemark.administrativeArea
-                        ].compactMap { $0 }.joined(separator: ", ")
-                        
-                        return LocationResult(
-                            name: name,
-                            coordinate: location.coordinate
-                        )
-                    }
-                } else {
-                    self?.searchResults = []
+                if let location = currentLocation {
+                    request.region = MKCoordinateRegion(
+                        center: location.coordinate,
+                        latitudinalMeters: 50_000,
+                        longitudinalMeters: 50_000
+                    )
                 }
+                
+                let search = MKLocalSearch(request: request)
+                currentSearch = search
+                
+                let response = try await search.start()
+                
+                searchResults = response.mapItems.compactMap { item in
+                    locationResult(from: item)
+                }
+            } catch {
+                searchResults = []
             }
+            
+            isSearching = false
+        }
+    }
+    
+    private func locationResult(from item: MKMapItem) -> LocationResult? {
+        if #available(iOS 26, *) {
+            let location = item.location
+            let name = item.name ?? "Unknown Location"
+            
+            return LocationResult(
+                name: name,
+                coordinate: location.coordinate
+            )
+        } else {
+            let components: [String?] = [
+                item.name,
+                item.placemark.locality,
+                item.placemark.administrativeArea
+            ]
+            let name = components.compactMap { $0 }.joined(separator: ", ")
+            
+            return LocationResult(
+                name: name.isEmpty ? "Unknown Location" : name,
+                coordinate: item.placemark.coordinate
+            )
         }
     }
     

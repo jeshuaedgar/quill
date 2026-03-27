@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import MapKit
 
 struct ReminderDetailView: View {
     @Environment(\.modelContext) private var modelContext
@@ -7,6 +8,7 @@ struct ReminderDetailView: View {
     @Bindable var reminder: Reminder
 
     @State private var isEditing = false
+    @State private var showLocationPicker = false
 
     private var viewModel: RemindersViewModel {
         RemindersViewModel(modelContext: modelContext)
@@ -33,7 +35,6 @@ struct ReminderDetailView: View {
 
             // MARK: - Details
             Section("Details") {
-                // Priority
                 if isEditing {
                     Picker("Priority", selection: $reminder.priority) {
                         ForEach(Priority.allCases) { level in
@@ -47,7 +48,6 @@ struct ReminderDetailView: View {
                     }
                 }
 
-                // Due Date
                 if let dueDate = reminder.dueDate {
                     LabeledContent("Due") {
                         Text(dueDate.formatted(date: .long, time: .shortened))
@@ -58,17 +58,55 @@ struct ReminderDetailView: View {
                     }
                 }
 
-                // Category
                 if let category = reminder.category {
                     LabeledContent("Category") {
                         Label(category.name, systemImage: category.icon)
                     }
                 }
 
-                // Status
                 LabeledContent("Status") {
                     Text(reminder.isCompleted ? "Completed" : "Active")
                         .foregroundStyle(reminder.isCompleted ? .green : .blue)
+                }
+                
+                if let focus = reminder.focusFilter {
+                    LabeledContent("Focus Mode") {
+                        Text(focus)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            
+            // MARK: - Location
+            if reminder.hasLocation {
+                Section("Location") {
+                    if let name = reminder.locationName {
+                        Label(name, systemImage: "mappin.circle.fill")
+                    }
+                    
+                    Text(reminder.triggerOnArrival ? "Triggers on arrival" : "Triggers on departure")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    
+                    if let coordinate = reminder.coordinate {
+                        Map {
+                            Marker(
+                                reminder.locationName ?? "Location",
+                                coordinate: coordinate
+                            )
+                            .tint(.red)
+                            
+                            MapCircle(
+                                center: coordinate,
+                                radius: reminder.locationRadius ?? 100
+                            )
+                            .foregroundStyle(.blue.opacity(0.15))
+                            .stroke(.blue, lineWidth: 1)
+                        }
+                        .frame(height: 200)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                    }
                 }
             }
 
@@ -103,6 +141,7 @@ struct ReminderDetailView: View {
                     withAnimation {
                         viewModel.toggleComplete(reminder)
                     }
+                    HapticManager.shared.success()
                 } label: {
                     Label(
                         reminder.isCompleted ? "Mark as Active" : "Mark as Complete",
@@ -112,6 +151,7 @@ struct ReminderDetailView: View {
 
                 Button(role: .destructive) {
                     viewModel.deleteReminder(reminder)
+                    HapticManager.shared.warning()
                     dismiss()
                 } label: {
                     Label("Delete Reminder", systemImage: "trash")
@@ -126,6 +166,7 @@ struct ReminderDetailView: View {
                     withAnimation {
                         if isEditing {
                             viewModel.updateReminder(reminder)
+                            HapticManager.shared.success()
                         }
                         isEditing.toggle()
                     }
